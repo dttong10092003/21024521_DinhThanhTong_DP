@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: testdb
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    volumes:
+      - mysql-data:/var/lib/mysql   # Gắn volume cho MySQL
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:  # Tạo volume mysql-data

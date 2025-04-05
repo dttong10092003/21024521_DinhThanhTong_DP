@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: testdb
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  node:
+    build: .
+    container_name: node-app
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+    command: npm start
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
