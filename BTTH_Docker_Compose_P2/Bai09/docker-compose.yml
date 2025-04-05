@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  flask-app:
+    build: .
+    container_name: flask-app
+    ports:
+      - "5000:5000"  # Ánh xạ cổng 5000 trong container ra cổng 5000 trên máy chủ
+    networks:
+      - flask-network
+
+networks:
+  flask-network:
+    driver: bridge
