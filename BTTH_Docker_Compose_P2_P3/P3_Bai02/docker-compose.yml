@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo_db
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD-SHELL", "test $$(mongosh --quiet --eval \"db.runCommand({ ping: 1 }).ok\") -eq 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  node-app:
+    build: ./app
+    container_name: node_app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongo_data:
