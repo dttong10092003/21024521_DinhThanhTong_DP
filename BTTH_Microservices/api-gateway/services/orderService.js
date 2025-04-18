@@ -1,22 +1,26 @@
-const axios = require('axios');
+// api-gateway/services/orderService.js
+const { callService } = require('../resilientClient');
 const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL;
 
-const createOrder = async (req, res) => {
-  try {
-    const response = await axios.post(`${ORDER_SERVICE_URL}/orders`, req.body);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res.status(error.response?.status || 500).json({ error: error.message });
+exports.createOrder = async (req, res) => {
+  const result = await callService(`${ORDER_SERVICE_URL}/orders`, {
+    method: 'POST',
+    data: req.body,
+  });
+
+  if (result.error) {
+    return res.status(503).json({ message: 'Order service lỗi', error: result.error });
   }
+
+  res.json(result.data);
 };
 
-const getAllOrders = async (req, res) => {
-  try {
-    const response = await axios.get(`${ORDER_SERVICE_URL}/orders`);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res.status(error.response?.status || 500).json({ error: error.message });
-  }
-};
+exports.getAllOrders = async (req, res) => {
+  const result = await callService(`${ORDER_SERVICE_URL}/orders`);
 
-module.exports = { createOrder, getAllOrders };
+  if (result.error) {
+    return res.status(503).json({ message: 'Order service lỗi', error: result.error });
+  }
+
+  res.json(result.data);
+};

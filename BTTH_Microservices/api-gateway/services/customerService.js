@@ -1,22 +1,26 @@
-const axios = require('axios');
+// api-gateway/services/customerService.js
+const { callService } = require('../resilientClient');
 const CUSTOMER_SERVICE_URL = process.env.CUSTOMER_SERVICE_URL;
 
-const createCustomer = async (req, res) => {
-  try {
-    const response = await axios.post(`${CUSTOMER_SERVICE_URL}/customers`, req.body);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res.status(error.response?.status || 500).json({ error: error.message });
+exports.createCustomer = async (req, res) => {
+  const result = await callService(`${CUSTOMER_SERVICE_URL}/customers`, {
+    method: 'POST',
+    data: req.body,
+  });
+
+  if (result.error) {
+    return res.status(503).json({ message: 'Customer service lỗi', error: result.error });
   }
+
+  res.json(result.data);
 };
 
-const getAllCustomers = async (req, res) => {
-  try {
-    const response = await axios.get(`${CUSTOMER_SERVICE_URL}/customers`);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res.status(error.response?.status || 500).json({ error: error.message });
-  }
-};
+exports.getAllCustomers = async (req, res) => {
+  const result = await callService(`${CUSTOMER_SERVICE_URL}/customers`);
 
-module.exports = { createCustomer, getAllCustomers };
+  if (result.error) {
+    return res.status(503).json({ message: 'Customer service lỗi', error: result.error });
+  }
+
+  res.json(result.data);
+};

@@ -12,9 +12,16 @@ const createProduct = async (req, res) => {
   }
 };
 
-// Lấy tất cả sản phẩm
-const getAllProducts = async (req, res) => {
+let retryCount = 0;
+
+exports.getAllProducts = async (req, res) => {
   try {
+    // Giả lập lỗi tạm thời 2 lần đầu
+    if (retryCount < 2) {
+      retryCount++;
+      throw new Error('Force error for retry test');
+    }
+
     const products = await Product.find();
     res.status(200).json(products);
   } catch (error) {
@@ -22,4 +29,4 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getAllProducts };
+module.exports = { createProduct };

@@ -1,22 +1,25 @@
-const axios = require('axios');
+const { callService } = require('../resilientClient');
 const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL;
 
-const createProduct = async (req, res) => {
-  try {
-    const response = await axios.post(`${PRODUCT_SERVICE_URL}/products`, req.body);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res.status(error.response?.status || 500).json({ error: error.message });
+exports.createProduct = async (req, res) => {
+  const result = await callService(`${PRODUCT_SERVICE_URL}/products`, {
+    method: 'POST',
+    data: req.body,
+  });
+
+  if (result.error) {
+    return res.status(503).json({ message: 'Product service lỗi', error: result.error });
   }
+
+  res.json(result.data);
 };
 
-const getAllProducts = async (req, res) => {
-  try {
-    const response = await axios.get(`${PRODUCT_SERVICE_URL}/products`);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    res.status(error.response?.status || 500).json({ error: error.message });
-  }
-};
+exports.getAllProducts = async (req, res) => {
+  const result = await callService(`${PRODUCT_SERVICE_URL}/products`);
 
-module.exports = { createProduct, getAllProducts };
+  if (result.error) {
+    return res.status(503).json({ message: 'Product service lỗi', error: result.error });
+  }
+
+  res.json(result.data);
+};

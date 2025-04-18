@@ -8,6 +8,9 @@ services:
       - product-service
       - order-service
       - customer-service
+      - payment-service
+      - inventory-service
+      - shipping-service
     networks:
       - microservices-network
 
@@ -16,7 +19,7 @@ services:
     ports:
       - "5001:5001"
     environment:
-      - MONGODB_URI=mongodb+srv://teophan370:teophan370@cluster0.2fs8aqv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - MONGODB_URI=mongodb+srv://teophan370:teophan370@cluster0.2fs8aqv.mongodb.net/productDB?retryWrites=true&w=majority&appName=Cluster0
     networks:
       - microservices-network
 
@@ -25,7 +28,7 @@ services:
     ports:
       - "5002:5002"
     environment:
-      - MONGODB_URI=mongodb+srv://teophan370:teophan370@cluster0.2fs8aqv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - MONGODB_URI=mongodb+srv://teophan370:teophan370@cluster0.2fs8aqv.mongodb.net/orderDB?retryWrites=true&w=majority&appName=Cluster0
     networks:
       - microservices-network
 
@@ -34,7 +37,34 @@ services:
     ports:
       - "5003:5003"
     environment:
-      - MONGODB_URI=mongodb+srv://teophan370:teophan370@cluster0.2fs8aqv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - MONGODB_URI=mongodb+srv://teophan370:teophan370@cluster0.2fs8aqv.mongodb.net/customerDB?retryWrites=true&w=majority&appName=Cluster0
+    networks:
+      - microservices-network
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "4001:4001"
+    environment:
+      - MONGODB_URI=mongodb+srv://teophan370:teophan370@cluster0.2fs8aqv.mongodb.net/paymentDB?retryWrites=true&w=majority&appName=Cluster0
+    networks:
+      - microservices-network
+
+  inventory-service:
+    build: ./inventory-service
+    ports:
+      - "4002:4002"
+    environment:
+      - MONGODB_URI=mongodb+srv://teophan370:teophan370@cluster0.2fs8aqv.mongodb.net/inventoryDB?retryWrites=true&w=majority&appName=Cluster0
+    networks:
+      - microservices-network
+
+  shipping-service:
+    build: ./shipping-service
+    ports:
+      - "4003:4003"
+    environment:
+      - MONGODB_URI=mongodb+srv://teophan370:teophan370@cluster0.2fs8aqv.mongodb.net/shippingDB?retryWrites=true&w=majority&appName=Cluster0
     networks:
       - microservices-network
 
